@@ -1,12 +1,20 @@
 # Prompteer - AI Prompt Sharing Platform
 
 ## 🌟 Overview
-Prompteer is a modern full-stack application built with Next.js, designed to create and share AI prompts. It provides a platform for users to discover, create, and share creative prompts for AI applications.
+Prompteer is a modern full-stack application built with Next.js, designed to create and share AI prompts. It provides a platform for users to discover, create, and share creative prompts for AI applications, with advanced features for prompt quality analysis and semantic search.
 
 ## ✨ Features
 - **User Authentication**: Secure sign-in functionality
 - **Create and Share**: Easy-to-use interface for creating and sharing AI prompts
-- **Search & Discovery**: Find prompts by content, tag, or username
+- **Prompt Quality Analysis**: Real-time analysis of prompt quality with detailed metrics
+  - Quality scoring with visual feedback
+  - Multiple quality metrics evaluation
+  - Submission control based on quality thresholds
+- **Enhanced Semantic Search**: Advanced search capabilities
+  - Semantic similarity matching
+  - Related topics discovery
+  - Keyword extraction and highlighting
+  - Relevance scoring for search results
 - **Profile Management**: Personal dashboard to manage your created prompts
 - **CRUD Operations**: Full control over your prompts - Create, Read, Update, and Delete
 - **Responsive Design**: Beautiful, modern UI that works across all devices
@@ -59,11 +67,26 @@ yarn dev
 
 ## 📝 Project Structure
 - `app/` - Next.js 13 app directory containing routes and layouts
+  - `api/` - API routes including prompt analysis and semantic search
 - `components/` - Reusable React components
 - `models/` - MongoDB schema models
 - `public/` - Static assets
 - `styles/` - Global styles and Tailwind CSS configuration
 - `utils/` - Utility functions and database connection
+
+## 🎯 Key Features in Detail
+
+### Prompt Quality Analysis
+- Real-time quality assessment as you type
+- Multiple quality metrics including specificity, clarity, and structure
+- Visual feedback with color-coded scores
+- Quality threshold enforcement for submissions
+
+### Enhanced Semantic Search
+- Advanced similarity matching for better search results
+- Automatic discovery of related topics
+- Keyword highlighting in search results
+- Relevance scoring for better result ranking
 
 ## 🤝 Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.
