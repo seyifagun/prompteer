@@ -6,6 +6,7 @@ import User from '@models/user';
 import { connectToDB } from '@utils/database';
 
 const handler = NextAuth({
+  secret: process.env.AUTH_SECRET,
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,
