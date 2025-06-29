@@ -6,6 +6,8 @@ import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 
 const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
+  // Destructure semantic search properties if they exist
+  const { similarity, keywords } = post;
   const { data: session } = useSession();
   const pathName = usePathname();
   const router = useRouter();
@@ -54,6 +56,29 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
 
   return (
     <div className='prompt_card'>
+      {similarity !== undefined && (
+        <div className='mb-4 flex flex-col gap-2'>
+          <div className='flex items-center gap-2'>
+            <span className='text-sm font-semibold text-gray-700'>Relevance:</span>
+            <span className={`text-sm ${similarity >= 0.7 ? 'text-green-500' : similarity >= 0.4 ? 'text-yellow-500' : 'text-red-500'}`}>
+              {Math.round(similarity * 100)}%
+            </span>
+          </div>
+          {keywords && keywords.length > 0 && (
+            <div className='flex flex-wrap gap-2'>
+              {keywords.map((keyword, index) => (
+                <span
+                  key={index}
+                  className='px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded-full'
+                  onClick={() => handleTagClick && handleTagClick(keyword)}
+                >
+                  #{keyword}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
       <div className='flex justify-between items-start gap-5'>
         <div
           className='flex-1 flex justify-start items-center gap-3 cursor-pointer'

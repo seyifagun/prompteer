@@ -5,10 +5,10 @@ const Home = () => (
     <h1 className='head_text text-center'>
       Discover & Share
       <br className='max-md:hidden' />
-      <span className='orange_gradient text-center'> AI-Charged Prompts</span>
+      <span className='blue_gradient text-center'> AI-Charged Prompts</span>
     </h1>
     <p className='desc text-center'>
-      Discover, share AI prompts, create and manage your own prompts while searching prompts using both keyword and semantic search
+      Discover and share AI prompts with intelligent quality analysis, create and manage your prompts with real-time feedback, and find the perfect prompt using advanced semantic search with topic discovery
     </p>
 
     <Feed />

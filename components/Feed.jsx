@@ -25,7 +25,8 @@ const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
-  const [isSemanticSearch, setIsSemanticSearch] = useState(false);
+  const [searchTopics, setSearchTopics] = useState([]);
+  const [totalResults, setTotalResults] = useState(0);
 
   const fetchPosts = async () => {
     const response = await fetch("/api/prompt");
@@ -38,24 +39,36 @@ const Feed = () => {
     fetchPosts();
   }, []);
 
-  const filterPrompts = async (searchtext, semantic = false) => {
-    if (semantic) {
+  const filterPrompts = async (searchtext) => {
+    if (searchtext.trim()) {
       try {
-        const response = await fetch(`/api/prompt/semantic-search?q=${encodeURIComponent(searchtext)}`);
+        const response = await fetch('/api/prompt/semantic-search', {
+          method: 'POST',
+          body: JSON.stringify({ searchQuery: searchtext })
+        });
         const data = await response.json();
-        return data;
+        setSearchTopics(data.topics);
+        setTotalResults(data.totalResults);
+        return data.results.map(result => ({
+          ...result.prompt,
+          similarity: result.similarity,
+          keywords: result.keywords
+        }));
       } catch (error) {
         console.error('Semantic search error:', error);
         return [];
       }
     } else {
       const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
-      return allPosts.filter(
+      const filtered = allPosts.filter(
         (item) =>
           regex.test(item.creator.username) ||
-          item.tags.some(tag => regex.test(tag)) ||
+          regex.test(item.tag) ||
           regex.test(item.prompt)
       );
+      setSearchTopics([]);
+      setTotalResults(filtered.length);
+      return filtered;
     }
   };
 
@@ -66,7 +79,7 @@ const Feed = () => {
     // debounce method
     setSearchTimeout(
       setTimeout(async () => {
-        const searchResult = await filterPrompts(e.target.value, isSemanticSearch);
+        const searchResult = await filterPrompts(e.target.value);
         setSearchedResults(searchResult);
       }, 500)
     );
@@ -85,29 +98,40 @@ const Feed = () => {
         <form className='relative w-full flex-center'>
           <input
             type='text'
-            placeholder={isSemanticSearch ? 'Search for similar prompts' : 'Search for a tag or a username'}
+            placeholder='Search for similar prompts, tags, or usernames'
             value={searchText}
             onChange={handleSearchChange}
             required
             className='search_input peer'
           />
         </form>
-        <div className='flex items-center gap-2'>
-          <label className='flex items-center gap-2 text-sm text-gray-500'>
-            <input
-              type='checkbox'
-              checked={isSemanticSearch}
-              onChange={(e) => {
-                setIsSemanticSearch(e.target.checked);
-                if (searchText) {
-                  filterPrompts(searchText, e.target.checked).then(setSearchedResults);
-                }
-              }}
-              className='form-checkbox h-4 w-4 text-blue-600'
-            />
-            Semantic Search
-          </label>
-        </div>
+
+
+
+        {searchTopics.length > 0 && (
+          <div className='w-full mt-4'>
+            <h3 className='text-sm font-semibold text-gray-700'>Related Topics:</h3>
+            <div className='flex flex-wrap gap-2 mt-2'>
+              {searchTopics.map((topic, index) => (
+                <span
+                  key={index}
+                  className='px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded-full cursor-pointer hover:bg-gray-200'
+                  onClick={() => handleTagClick(topic)}
+                >
+                  #{topic}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {searchText && (
+          <div className='text-sm text-gray-500 mt-2'>
+            Found {totalResults} {totalResults === 1 ? 'result' : 'results'}
+          </div>
+        )}
+
+
       </div>
 
       {/* All Prompts */}
